@@ -18,7 +18,6 @@ class latex():
             inputval = np.array(inputval)
         if isinstance(inputval, np.ndarray):
             self.formula = sym.latex(sym.Matrix(inputval))
-
         self.formula = preamble+self.formula+post
     
     def __str__(self):
