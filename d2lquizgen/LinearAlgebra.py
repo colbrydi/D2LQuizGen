@@ -109,10 +109,10 @@ class solve_system_question(quiz.question):
         
         self.Options = []
         self.Answers = []
-
-        if correct_sol == "No Solution":
-            self.Options.append('{correct_sol}')
-            self.Answers.append(100)
+        if isinstance(correct_sol,str):
+            if correct_sol == "No Solution":
+                self.Options.append('{correct_sol}')
+                self.Answers.append(100)
         else:
             solution = latex.sol2str(correct_sol)
             self.Options.append(f'{solution}')
