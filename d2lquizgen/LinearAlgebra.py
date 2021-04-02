@@ -30,8 +30,30 @@ def random_int_matrix(m,n,minval=-10,maxval=10):
 def random_float_matrix(m,n,minval=-10,maxval=10):
     return [ [random.uniform(minval,maxval) for i in range(n)] for i in range(m)]
 
-def random_singular_matrix(n):
-    raise NotImplementedError()
+def random_singular_matrix(n,minval=-10,maxval=10,mat_type='int',dependency='row',lincom=None):
+    if mat_type == 'int':
+        mat = random_int_matrix(n-1,n,minval,maxval)
+    elif mat_type == 'float':
+        mat = random_float_matrix(n-1,n,minval,maxval)
+    else:
+        raise ValueError("mat_type can only be 'int' or 'float'")
+        
+    if not dependency in ['row','col']:
+        raise ValueError("dependcy must be either 'row' or 'col'.")
+        
+    if lincom is None:
+        lincom = [1 for i in range(n-1)]
+        
+    new_row = np.dot(np.array(lincom).reshape([1,n-1]), mat).reshape(n).tolist()
+    mat.append(new_row)
+    
+    if dependency == 'col':
+        return np.array(mat).T.tolist()
+    return mat
+    
+    
+    
+    
 
 def quick_shuffle(it):
     it2 = it.copy()

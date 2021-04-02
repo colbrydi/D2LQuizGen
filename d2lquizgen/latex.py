@@ -1,15 +1,16 @@
 import sympy as sym
 import numpy as np
 import re
-    
+import hashlib
 
 
 class latex():
     usefiles = False
     useMarkdown = False
     
-    def __init__(self, inputval, preamble='',post=''):
+    def __init__(self, inputval, preamble='',post='',fontsize=12):
         self.formula = ''
+        self.fontsize = fontsize
         if isinstance(inputval,str):
             self.formula = inputval
         if isinstance(inputval,list):
@@ -32,9 +33,17 @@ class latex():
             The display option is False for inline $ $ and True for displaystyle latex.
         """
         
+        ## Sets the fontsize.
+        if fontsize != self.fontsize:
+            fontsize = self.fontsize
+        
         #Make unique filname from formula string
         if file == '':
-            file = re.sub('[\W_]', '', self.formula)
+#             file = re.sub('[\W_]', '', self.formula)
+            ##  D2L has a limit on the length of the file title so we will hash this name for now. 
+            ## TODO: Implement better shorthand for filenames.    
+            file = hashlib.md5((self.formula).encode()).hexdigest()
+
             if file == '':
                 print(f'filename for {self.formula} is empty')
             file = f'./images/{file}.png'
@@ -58,7 +67,8 @@ class latex():
         if latex.useMarkdown:
             return f'![{str(self.formula)}]({file})'
         else:
-            return f'<img src=\"{file}\" alt=\"$${str(self.formula)}$$\">'
+            ## Deleted the $$ from alt text
+            return f'<img src=\"{file}\" alt=\"{str(self.formula)}\">'
     
 def sol2str(it):
     '''Turns a list [1,2,3] into latex string for x1=1 x2=2 x3=3'''
